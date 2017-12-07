@@ -22,7 +22,7 @@ public class TestTool
         record.set("credit_code", "012345678901234567");
         record.set("rep_person", "test_rep_person");
         list.add(record);
-        company.add(list);
+        company.insert(list);
         dbOperator.close();
     }
 }

@@ -2,6 +2,7 @@ package dao.driver;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class TableDriver
 {
@@ -15,7 +16,38 @@ public class TableDriver
         this.databaseDriver = databaseDriver;
     }
 
-    public int add(List<RecordDriver> records)
+    private void buildRecordValues(RecordDriver record, StringBuilder recordContent, Set<String> fields)
+    {
+        for(String fieldName : fields)
+        {
+            if(recordContent.length() != 0)
+            {
+                recordContent.append(", ");
+            }
+            String valueString = String.format("'%s'", record.get(fieldName).toString());
+            recordContent.append(valueString);
+        }
+    }
+
+    public int insert(String...recordValues)
+    {
+        String recordContent = String.join(", ", recordValues);
+        String statement = String.format("INSERT INTO %s VALUES (%s);", name, recordContent);
+        return databaseDriver.execUpdate(statement);
+    }
+
+    public int insert(RecordDriver record)
+    {
+        String columnNames = "";
+        StringBuilder recordContent = new StringBuilder();
+        Set<String> fields = record.getFields();
+        columnNames = String.join(", ", fields);
+        buildRecordValues(record, recordContent, fields);
+        String statement = String.format("INSERT INTO %s (%s) VALUES %s;", name, columnNames, recordContent);
+        return databaseDriver.execUpdate(statement);
+    }
+
+    public int insert(List<RecordDriver> records)
     {
         String columnNames = "";
         StringBuilder recordContent = new StringBuilder();
@@ -34,15 +66,7 @@ public class TableDriver
                 {
                     recordContent.append(", ");
                 }
-                for(String fieldName : fields)
-                {
-                    if(recordContent.length() != 0)
-                    {
-                        recordContent.append(", ");
-                    }
-                    String valueString = String.format("'%s'", record.get(fieldName).toString());
-                    recordContent.append(valueString);
-                }
+                buildRecordValues(record, recordContent, fields);
                 allRecordContents.append(String.format("(%s)", recordContent));
             }
         }
@@ -50,9 +74,22 @@ public class TableDriver
         return databaseDriver.execUpdate(statement);
     }
 
-    public int del()
+    public int delete(UUID primaryKeyValue)
     {
-        return 0;
+        String statement = String.format("DELETE FROM %s WHERE id='%s'", name, primaryKeyValue);
+        return databaseDriver.execUpdate(statement);
+    }
+
+    public int delete(String condition)
+    {
+        String statement = String.format("DELETE FROM %s WHERE %s", name, condition);
+        return databaseDriver.execUpdate(statement);
+    }
+
+    public int delete(String fieldName, Object value)
+    {
+        String statement = String.format("DELETE FROM %s WHERE %s='%s'", name, fieldName, value);
+        return databaseDriver.execUpdate(statement);
     }
 
     public int update()
@@ -60,7 +97,7 @@ public class TableDriver
         return 0;
     }
 
-    public int query()
+    public int select()
     {
         return 0;
     }
