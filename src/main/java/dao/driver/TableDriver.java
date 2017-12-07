@@ -31,7 +31,7 @@ public class TableDriver
 
     public int insert(String...recordValues)
     {
-        String recordContent = String.join(", ", recordValues);
+        String recordContent = String.format("'%s'", String.join("', '", recordValues));
         String statement = String.format("INSERT INTO %s VALUES (%s);", name, recordContent);
         return databaseDriver.execUpdate(statement);
     }
