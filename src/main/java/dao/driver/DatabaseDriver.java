@@ -76,7 +76,7 @@ public class DatabaseDriver
         int returnValue;
         try
         {
-            driverLog.record(String.format("Executing SQL statement: %s.", statement));
+            driverLog.record(String.format("Executing SQL statement: %s", statement));
             ps = con.prepareStatement(statement);
             returnValue = ps.executeUpdate();
         }
@@ -95,7 +95,7 @@ public class DatabaseDriver
         int returnValue = 0;
         try
         {
-            driverLog.record(String.format("Executing SQL statement: %s.", statement));
+            driverLog.record(String.format("Executing SQL statement: %s", statement));
             ps = con.prepareStatement(statement);
             ResultSet rs = ps.executeQuery();
             ResultSetMetaData md = rs.getMetaData();

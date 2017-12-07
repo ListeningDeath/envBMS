@@ -10,14 +10,25 @@ public class DatabaseOperator
 {
     private Log serviceLog;
     private DatabaseDriver driver;
-    public Company company;
+
+    public class Table
+    {
+        public Company company;
+
+        private Table()
+        {
+            company = new Company(driver);
+        }
+    }
+
+    public Table table;
 
     public DatabaseOperator(String serverPath, String serverPort, String databaseName, String userName, String passWord)
     {
         serviceLog = new Log();
 
         driver = new DatabaseDriver(serverPath, serverPort, databaseName, userName, passWord);
-        company = new Company(driver);
+        table = new Table();
     }
 
     public int connect()
