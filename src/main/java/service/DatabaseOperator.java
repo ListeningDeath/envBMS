@@ -7,7 +7,7 @@ import java.util.List;
 
 public class DatabaseOperator
 {
-    private DatabaseDriver driver = null;
+    private DatabaseDriver driver;
 
     public DatabaseOperator(String serverPath, String serverPort, String databaseName, String userName, String passWord)
     {
