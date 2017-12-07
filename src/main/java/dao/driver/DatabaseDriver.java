@@ -1,6 +1,7 @@
 package dao.driver;
 
 import java.sql.*;
+import java.util.Arrays;
 import java.util.List;
 
 public class DatabaseDriver
@@ -62,7 +63,7 @@ public class DatabaseDriver
         }
         catch (Exception e)
         {
-            driverLog.record(e.getStackTrace().toString());
+            driverLog.record(Arrays.toString(e.getStackTrace()));
             driverLog.record("Connection closed failed.");
             return -1;
         }
@@ -81,7 +82,7 @@ public class DatabaseDriver
         }
         catch (SQLException e)
         {
-            driverLog.record(e.getStackTrace().toString());
+            driverLog.record(Arrays.toString(e.getStackTrace()));
             driverLog.record("Execution failed.");
             return -1;
         }
@@ -89,7 +90,7 @@ public class DatabaseDriver
         return returnValue;
     }
 
-    public int execQuery(String statement, List<QueryItem> result)
+    public int execQuery(String statement, List<RecordDriver> result)
     {
         int returnValue = 0;
         try
@@ -101,18 +102,18 @@ public class DatabaseDriver
             int columnCount = md.getColumnCount();
             while(rs.next())
             {
-                QueryItem queryItem = new QueryItem();
+                RecordDriver recordDriver = new RecordDriver();
                 for(int i = 1; i <= columnCount; i++)
                 {
-                    queryItem.set(md.getColumnName(i), rs.getObject(i).toString());
+                    recordDriver.set(md.getColumnName(i), rs.getObject(i));
                 }
-                result.add(queryItem);
+                result.add(recordDriver);
             }
             rs.close();
         }
         catch (SQLException e)
         {
-            driverLog.record(e.getStackTrace().toString());
+            driverLog.record(Arrays.toString(e.getStackTrace()));
             driverLog.record("Execution failed.");
             return -1;
         }
