@@ -21,50 +21,19 @@ public class DatabaseOperator
 
     public int close()
     {
+
         return driver.close();
     }
 
     public int execUpdate(String statement)
     {
+
         return driver.execUpdate(statement);
     }
 
     public int execQuery(String statement, List<QueryItem> result)
     {
-        return driver.execQuery(statement, result);
-    }
 
-    public int select(String[] fields, String[] tables, String condition, List<QueryItem> result)
-    {
-        String fieldPart;
-        String tablePart;
-        String conditionPart;
-        String statement;
-        if (fields.length == 0)
-        {
-            fieldPart = "select *";
-        }
-        else
-        {
-            fieldPart = "select " + String.join(",", fields);
-        }
-        if (tables.length == 0)
-        {
-            tablePart = "from pg_tables";
-        }
-        else
-        {
-            tablePart = "from " + String.join(",", tables);
-        }
-        if (condition == "")
-        {
-            conditionPart = "";
-        }
-        else
-        {
-            conditionPart = "where" + condition;
-        }
-        statement = String.join(" ", new String[]{fieldPart, tablePart, conditionPart});
-        return execQuery(statement, result);
+        return driver.execQuery(statement, result);
     }
 }
