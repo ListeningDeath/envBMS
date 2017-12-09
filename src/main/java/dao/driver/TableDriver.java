@@ -29,6 +29,20 @@ public class TableDriver
         }
     }
 
+    private void buildColumnValues(RecordDriver columns, StringBuilder content)
+    {
+        for(String setField : columns.getFields())
+        {
+            if(content.length() != 0)
+            {
+                content.append(", ");
+            }
+            String setValue = columns.get(setField).toString();
+            String setContent = String.format("%s='%s'", setField, setValue);
+            content.append(setContent);
+        }
+    }
+
     public int insert(String...recordValues)
     {
         String recordContent = String.format("'%s'", String.join("', '", recordValues));
@@ -92,13 +106,36 @@ public class TableDriver
         return databaseDriver.execUpdate(statement);
     }
 
-    public int update()
+    public int update(RecordDriver setColumns, String condition)
     {
-        return 0;
+        StringBuilder setContents = new StringBuilder();
+        buildColumnValues(setColumns, setContents);
+        String statement = String.format("UPDATE %s SET %s WHERE %s", name, setContents, condition);
+        return databaseDriver.execUpdate(statement);
     }
 
-    public int select()
+    public int update(RecordDriver setColumns, RecordDriver conditionColumns)
     {
-        return 0;
+        StringBuilder setContents = new StringBuilder();
+        StringBuilder conditionContents = new StringBuilder();
+        buildColumnValues(setColumns, setContents);
+        buildColumnValues(conditionColumns, conditionContents);
+        String statement = String.format("UPDATE %s SET %s WHERE %s", name, setContents, conditionContents);
+        return databaseDriver.execUpdate(statement);
+    }
+
+    public int select(List<String> fields, String condition, List<RecordDriver> result)
+    {
+        String fieldContent;
+        if(fields.size() == 0)
+        {
+            fieldContent = "*";
+        }
+        else
+        {
+            fieldContent = String.join(",", fields);
+        }
+        String statement = String.format("SELECT %s FROM %s WHERE %s", fieldContent, name, condition);
+        return databaseDriver.execQuery(statement, result);
     }
 }
